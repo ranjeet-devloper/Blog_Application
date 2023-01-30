@@ -2,18 +2,20 @@ package com.blog.services;
 
 import java.util.List;
 
+import com.blog.entity.Category;
 import com.blog.payloads.CategoryDto;
+import com.blog.responses.UserResponse;
 
 public interface ICategoryService {
 
-	CategoryDto createCatyegory(CategoryDto categoryDto);
+	UserResponse createCatyegory(CategoryDto categoryDto);
 
-	CategoryDto updateCatyegory(CategoryDto categoryDto, Integer id);
+	UserResponse updateCatyegory(CategoryDto categoryDto, Long id);
 
-	void deleteCategory(Integer id);
+	String deleteCategory(Long id);
 
-	CategoryDto getCatyegory(Integer categoryId);
+	Category getCatyegory(Long categoryId);
 
-	List<CategoryDto> getAllCategory();
+	List<Category> getAllCategory();
 
 }

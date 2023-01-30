@@ -1,40 +1,80 @@
 package com.blog.services.impl;
 
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import com.blog.converter.Dtoconvertor;
+import com.blog.entity.Category;
+import com.blog.exceptions.ResourceNotFoundException;
 import com.blog.payloads.CategoryDto;
+import com.blog.repositories.ICategoryRepository;
+import com.blog.responses.UserResponse;
 import com.blog.services.ICategoryService;
 
 @Service
 public class CategoryServiceImpl implements ICategoryService {
 
-	@Override
-	public CategoryDto createCatyegory(CategoryDto categoryDto) {
+	@Autowired
+	private ICategoryRepository iCategoryRepository;
 
-		return null;
+	@Autowired
+	private Dtoconvertor dtoconvertor;
+
+	@Override
+	public UserResponse createCatyegory(CategoryDto categoryDto) {
+
+		iCategoryRepository.save(dtoconvertor.dtoToCategory(categoryDto));
+
+		return UserResponse.builder().responsecode(HttpStatus.CREATED.value())
+				.responsemessage("Category Successfully Created").build();
 	}
 
 	@Override
-	public CategoryDto updateCatyegory(CategoryDto categoryDto, Integer id) {
+	public UserResponse updateCatyegory(CategoryDto categoryDto, Long id) {
 
-		return null;
+		Optional<Category> x = iCategoryRepository.findById(id);
+
+		if (x.isEmpty()) {
+			throw new ResourceNotFoundException("Category", "id", id);
+		} else {
+			Category p = dtoconvertor.dtoToCategory(categoryDto);
+			p.setId(x.get().getId());
+			this.iCategoryRepository.save(p);
+		}
+
+		return UserResponse.builder().responsecode(HttpStatus.OK.value())
+				.responsemessage("Category Successfully Updated").build();
 	}
 
 	@Override
-	public void deleteCategory(Integer id) {
-
+	public String deleteCategory(Long id) {
+		Optional<Category> findById = this.iCategoryRepository.findById(id);
+		if (findById.isEmpty()) {
+			throw new ResourceNotFoundException("Category", "id", id);
+		} else {
+			this.iCategoryRepository.deleteById(id);
+			return String.format("category with id %d is deleted", id);
+		}
 	}
 
 	@Override
-	public CategoryDto getCatyegory(Integer categoryId) {
-
-		return null;
+	public Category getCatyegory(Long categoryId) {
+		Optional<Category> findById = this.iCategoryRepository.findById(categoryId);
+		if (findById.isEmpty()) {
+			throw new ResourceNotFoundException("Category", "id", categoryId);
+		} else {
+			return findById.get();
+		}
 	}
 
 	@Override
-	public List<CategoryDto> getAllCategory() {
+	public List<Category> getAllCategory() {
 
-		return null;
+		return this.iCategoryRepository.findAll();
+
 	}
 
 }

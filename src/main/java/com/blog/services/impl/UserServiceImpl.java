@@ -26,7 +26,7 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public UserResponse createUser(User user) {
 		userrepo.save(user);
-		return new UserResponse("201", "user sucessfully created");
+		return new UserResponse(201, "user sucessfully created");
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class UserServiceImpl implements IUserService {
 			userrepo.save(user);
 		}
 
-		return new UserResponse("200", "user Successfully updated");
+		return new UserResponse(200, "user Successfully updated");
 	}
 
 	@Override
